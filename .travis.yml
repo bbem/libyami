@@ -27,19 +27,22 @@ before_install:
   - sudo apt-get install -y libxext-dev
   - sudo apt-get install -y libxfixes-dev
   - sudo apt-get install -y intel-gpu-tools
- 
-install:
   - git clone https://github.com/01org/libva.git
   - (cd libva && ./autogen.sh && ./configure --prefix=/usr && sudo make install)
+
+ 
+install:
+  - git clone https://github.com/01org/libyami.git
+  - (cd libyami && ./autogen.sh --prefix=/opt/yami && make -j8 && make install)
 
 addons:
   coverity_scan:
     project:
-      name: "01org/intel-vaapi-driver"
+      name: "01org/libyami"
       description: "Build submitted via Travis CI"
-    notification_email: intel-media-security@lists.01.org
-    build_command_prepend: "./autogen.sh; ./configure --prefix=/usr"
-    build_command:   "make -j4"
+    notification_email: 531669721@sjtu.edu.cn
+    build_command_prepend: "./autogen.sh; ./configure --prefix=/opt/yami"
+    build_command:   "make -j8"
     branch_pattern: coverity_scan
 
 script:
@@ -48,13 +51,11 @@ script:
         echo "Don't build on coverty_scan branch.";
         exit 0;
     fi
-  - ./autogen.sh
-  - ./configure --prefix=/usr
-  - make -j4 ; sudo make install
-  - make check
+  - ./autogen.sh --prefix=/opt/yami
+  - make -j8 ; sudo make install
 
-after_success:
-        - coveralls --exclude lib --exclude tests --gcov-options '\-lp'
+#after_success:
+ #       - coveralls --exclude lib --exclude tests --gcov-options '\-lp'
 
 notifications:
 # Emails are sent to the committer's git-configured email address by default,
@@ -68,7 +69,7 @@ notifications:
 
 # Slack notifications
 #
-  slack: intel-media:p0wZO3fWJ1ouSsF0RNKbOl5G
+
 
 # IRC notifications disabled by default.
 # Uncomment next 5 lines to send notifications to chat.freenode.net#caffe
