@@ -18,7 +18,7 @@
 #include "config.h"
 #endif
 
-#include "h264Parsers.h"
+#include "h264Parser.h"
 
 #include <math.h>
 
